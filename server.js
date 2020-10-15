@@ -5,7 +5,7 @@ const POKEDEX = require('./pokedex.json')
 const cors = require('cors');
 const helmet = require('helmet');
 
-//console.log(process.env.API_TOKEN)
+
 
 const app = express();
 
@@ -62,6 +62,16 @@ const handleGetPokemon = (req, res) =>{
 };
 
 app.get('/pokemon', handleGetPokemon)
+
+app.use((error, req, res, next) => {
+    let response
+    if (process.env.NODE_ENV === 'production') {
+      response = { error: { message: 'server error' }}
+    } else {
+      response = { error }
+    }
+    res.status(500).json(response)
+  })
 
 const PORT = process.env.PORT || 8000;
 
